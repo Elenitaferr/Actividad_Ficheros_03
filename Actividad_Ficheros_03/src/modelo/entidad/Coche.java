@@ -9,12 +9,22 @@ public class Coche implements Serializable{
 	 */
 	private static final long serialVersionUID = 6641523777634248872L;
 	
+	private int id;
 	private String marca;
 	private String modelo;
 	private TipoMotor tipoMotor;
 	public String getMarca() {
 		return marca;
 	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setMarca(String marca) {
 		this.marca = marca;
 	}
@@ -33,11 +43,11 @@ public class Coche implements Serializable{
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
 	@Override
 	public String toString() {
-		return "Coche [marca=" + marca + ", modelo=" + modelo + ", tipoMotor=" + tipoMotor + "]";
+		return "Coche [id=" + id + ", marca=" + marca + ", modelo=" + modelo + ", tipoMotor=" + tipoMotor + "]";
 	}
-	
 	
 
 }
