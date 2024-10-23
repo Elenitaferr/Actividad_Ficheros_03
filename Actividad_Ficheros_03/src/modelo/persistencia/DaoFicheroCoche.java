@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-<<<<<<< HEAD
+
 import modelo.entidad.Coche;
 
 public class DaoFicheroCoche {
@@ -98,9 +98,6 @@ public class DaoFicheroCoche {
 		}
 	}
 	
-=======
-public class DaoFicheroCoche{
 
->>>>>>> a79eb61790fc02dc6cd1f3d835c13a099d9521b6
 
 }
