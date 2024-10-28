@@ -1,7 +1,6 @@
 package modelo.persistencia;
 
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -17,42 +16,32 @@ public class DaoFicheroCoche {
 	private static final String FICHERO_COCHES = "coches.dat";
 	private static int contadorID = 1;
 	
-	public boolean guardar(Coche coche) {
-		try(FileOutputStream file = new FileOutputStream(FICHERO_COCHES, true);
+	public boolean guardar(Coche coche) throws Exception{
+		try(FileOutputStream file = new FileOutputStream(FICHERO_COCHES);
 				ObjectOutputStream escritor = new ObjectOutputStream(file);) {
-			coche.setId(contadorID);
-			escritor.writeObject(coche);
-			contadorID++;
-			return true;
-		} catch (IOException e) {
-			return false;
-		}			
-	}
-	
-	public Coche obtener(int id) {
-		try (FileInputStream file = new FileInputStream(FICHERO_COCHES);
-				ObjectInputStream lector = new ObjectInputStream(file);){
-			int bytesEnBuffer = file.available();
-			Coche coche  = null;
-			while (bytesEnBuffer > 0) {//mientras haya bytes que leer, sigo leyendo objetos
-				try {
-					coche = (Coche) lector.readObject();//leemos
-					if(coche.getId() == id) {
-						return coche;
-					}else {
-						bytesEnBuffer = file.available();
-					}
-				} catch (Exception e2) {
-					return null;
-				} 				
+			List<Coche>lista = listar();
+			coche.setId(++contadorID);
+			lista.add(coche);
+			for (Coche c : lista) {
+				escritor.writeObject(c);
 			}
-			return null;
-		} catch (IOException e) {
-			return null;
+			return true;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 	
-	public List<Coche> listar(){
+	public Coche obtener(int id) throws Exception {
+		List<Coche>lista = listar();
+		for (Coche c :lista) {
+			if(c.getId() == id) {
+				return c;
+			}
+		}
+		return null;
+	}
+	
+	public List<Coche> listar()throws Exception{
 		List<Coche> listaCoches = new ArrayList<Coche>();
 		
 		try (FileInputStream file = new FileInputStream(FICHERO_COCHES);
@@ -60,46 +49,36 @@ public class DaoFicheroCoche {
 			int bytesEnBuffer = file.available();
 			Coche coche  = null;
 			while (bytesEnBuffer > 0) {//mientras haya bytes que leer, sigo leyendo objetos
-				try {
 					coche = (Coche) lector.readObject();//leemos
 					listaCoches.add(coche);
-				} catch (Exception e2) {
-					return null;
-				} 				
+					bytesEnBuffer = file.available();
 			}
-			return listaCoches;
+			
 		} catch (IOException e) {
-			return null;
+			throw e;
 		}
+		return listaCoches;
 	}
-	
-	public boolean borrar(int id) {
-		List<Coche> lista = listar();
-		boolean encontrado = false;
-		List<Coche> listaAuxiliar = new ArrayList<Coche>();
-		
-		
-		for(Coche c : lista) {
-			if(c.getId() == id) {
-				encontrado = true;
-			}else {
-				listaAuxiliar.add(c);
+
+	public boolean borrar(int id) throws Exception{
+		Coche c = obtener(id);
+			List<Coche> lista = listar();
+			boolean borrado = lista.remove(c);
+			if(borrado) {
+					try(FileOutputStream file = new FileOutputStream(FICHERO_COCHES);
+							ObjectOutputStream escritor = new ObjectOutputStream(file);) {
+						for (Coche coche : lista) {
+							escritor.writeObject(coche);
+						}
+						return true;
+					} catch (Exception e) {
+						return false;
+					}
+				}else {
+					return false;
 			}
-		}
-		
-		if(encontrado) {
-			for(Coche c : listaAuxiliar) {
-				File file = new File(FICHERO_COCHES);
-				file.delete();
-				guardar(c);
-			}
-			return true;
-		}else {
-			return false;
 		}
 	}
 
-	
 
 
-}

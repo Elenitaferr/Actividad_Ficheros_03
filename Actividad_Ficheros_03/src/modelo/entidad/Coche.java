@@ -1,6 +1,7 @@
 package modelo.entidad;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Coche implements Serializable{
 
@@ -48,6 +49,13 @@ public class Coche implements Serializable{
 	public String toString() {
 		return "Coche [id=" + id + ", marca=" + marca + ", modelo=" + modelo + ", tipoMotor=" + tipoMotor + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id);
+	}
+
+
 	
 
 }
